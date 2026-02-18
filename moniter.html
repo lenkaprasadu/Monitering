@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrasaduWorld.com</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00FF9F;
+            --secondary: #00D4FF;
+            --danger: #FF3366;
+            --warning: #FFB800;
+            --dark: #0A0E27;
+            --darker: #060918;
+            --card-bg: #141B3A;
+            --text: #E8F1F5;
+            --text-dim: #8B9DC3;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--dark);
+            color: var(--text);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 255, 159, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 212, 255, 0.03) 0%, transparent 50%),
+                linear-gradient(90deg, transparent 0%, rgba(0, 255, 159, 0.02) 50%, transparent 100%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 159, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 159, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 0;
+            pointer-events: none;
+            animation: gridScroll 20s linear infinite;
+        }
+
+        @keyframes gridScroll {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Header */
+        header {
+            position: relative;
+            z-index: 100;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--darker) 0%, var(--card-bg) 100%);
+            border-bottom: 2px solid var(--primary);
+            box-shadow: 0 4px 30px rgba(0, 255, 159, 0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-weight: 900;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 5px rgba(0, 255, 159, 0.5)); }
+            to { filter: drop-shadow(0 0 20px rgba(0, 255, 159, 0.8)); }
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.5rem;
+            background: rgba(0, 255, 159, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: 50px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.2); }
+        }
+
+        .status-indicator.offline .status-dot {
+            background: var(--danger);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 2px solid transparent;
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent 0%, rgba(0, 255, 159, 0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 255, 159, 0.2);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 255, 159, 0.3);
+        }
+
+        .stat-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text-dim);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-unit {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            font-weight: 300;
+        }
+
+        .stat-range {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+
+        .stat-status {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 1rem;
+        }
+
+        .status-normal {
+            background: rgba(0, 255, 159, 0.2);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .status-warning {
+            background: rgba(255, 184, 0, 0.2);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+
+        .status-danger {
+            background: rgba(255, 51, 102, 0.2);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 15px rgba(0, 255, 159, 0.5);
+        }
+
+        /* Charts Section */
+        .charts-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .chart-card {
+            background: var(--card-bg);
+            border: 2px solid rgba(0, 255, 159, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            animation: slideUp 0.8s ease-out 0.2s both;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 300px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            position: relative;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* Controls */
+        .controls-section {
+            background: var(--card-bg);
+            border: 2px solid rgba(0, 255, 159, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            animation: slideUp 0.8s ease-out 0.4s both;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .control-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .control-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-dim);
+        }
+
+        .control-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        button {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--darker);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 255, 159, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 255, 159, 0.5);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* Alerts */
+        .alerts-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 51, 102, 0.1);
+            border: 2px solid var(--danger);
+            border-radius: 15px;
+            display: none;
+        }
+
+        .alerts-section.active {
+            display: block;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .alert-title {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--danger);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .alert-item {
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 255, 159, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+    <div class="grid-overlay"></div>
+
+    <header>
+        <div class="header-content">
+            <h1>Environmental Monitor</h1>
+            <div class="status-indicator" id="connectionStatus">
+                <div class="status-dot"></div>
+                <span>CONNECTED</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <!-- Temperature Card -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">🌡️</div>
+                </div>
+                <div class="stat-title">Temperature</div>
+                <div>
+                    <span class="stat-value" id="tempValue">--</span>
+                    <span class="stat-unit">°C</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="tempProgress" style="width: 0%"></div>
+                </div>
+                <div class="stat-range">
+                    <span>Min: 0°C</span>
+                    <span>Max: 100°C</span>
+                </div>
+                <span class="stat-status status-normal" id="tempStatus">NORMAL</span>
+            </div>
+
+            <!-- Humidity Card -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">💧</div>
+                </div>
+                <div class="stat-title">Humidity</div>
+                <div>
+                    <span class="stat-value" id="humidValue">--</span>
+                    <span class="stat-unit">%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="humidProgress" style="width: 0%"></div>
+                </div>
+                <div class="stat-range">
+                    <span>Min: 0%</span>
+                    <span>Max: 100%</span>
+                </div>
+                <span class="stat-status status-normal" id="humidStatus">NORMAL</span>
+            </div>
+
+            <!-- CO2 Card -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">☁️</div>
+                </div>
+                <div class="stat-title">CO2 Level</div>
+                <div>
+                    <span class="stat-value" id="co2Value">--</span>
+                    <span class="stat-unit">ppm</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="co2Progress" style="width: 0%"></div>
+                </div>
+                <div class="stat-range">
+                    <span>Min: 400</span>
+                    <span>Max: 2000</span>
+                </div>
+                <span class="stat-status status-normal" id="co2Status">NORMAL</span>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="charts-section">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">Historical Data</div>
+                    <button onclick="clearData()">Clear Data</button>
+                </div>
+                <div class="chart-container">
+                    <canvas id="mainChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls-section">
+            <h2 style="font-family: 'Orbitron', sans-serif; margin-bottom: 1rem;">SYSTEM CONTROLS</h2>
+            <div class="controls-grid">
+                <div class="control-item">
+                    <span class="control-label">Last Update</span>
+                    <span class="control-value" id="lastUpdate">--:--:--</span>
+                </div>
+                <div class="control-item">
+                    <span class="control-label">Data Points</span>
+                    <span class="control-value" id="dataPoints">0</span>
+                </div>
+                <div class="control-item">
+                    <span class="control-label">Update Rate</span>
+                    <span class="control-value">5 sec</span>
+                </div>
+                <div class="control-item">
+                    <button onclick="refreshData()">Refresh Data</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alerts -->
+        <div class="alerts-section" id="alertsSection">
+            <div class="alert-title">⚠️ SYSTEM ALERTS</div>
+            <div id="alertsList"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>ESP32 Environmental Monitoring System &copy; 2026 | Real-time IoT Dashboard</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Configuration
+        const ESP32_IP = '192.168.1.100'; // Change this to your ESP32 IP
+        const UPDATE_INTERVAL = 5000; // 5 seconds
+
+        // Data storage
+        let temperatureData = [];
+        let humidityData = [];
+        let co2Data = [];
+        let timeLabels = [];
+        let dataPointCount = 0;
+
+        // Chart initialization
+        const ctx = document.getElementById('mainChart').getContext('2d');
+        const mainChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: timeLabels,
+                datasets: [
+                    {
+                        label: 'Temperature (°C)',
+                        data: temperatureData,
+                        borderColor: '#00FF9F',
+                        backgroundColor: 'rgba(0, 255, 159, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Humidity (%)',
+                        data: humidityData,
+                        borderColor: '#00D4FF',
+                        backgroundColor: 'rgba(0, 212, 255, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'CO2 (ppm/10)',
+                        data: co2Data,
+                        borderColor: '#FFB800',
+                        backgroundColor: 'rgba(255, 184, 0, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#E8F1F5',
+                            font: {
+                                family: 'Rajdhani',
+                                size: 12
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        ticks: { color: '#8B9DC3' },
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                    },
+                    x: {
+                        ticks: { color: '#8B9DC3' },
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                    }
+                }
+            }
+        });
+
+        // Fetch data from ESP32
+        async function fetchSensorData() {
+            try {
+                const response = await fetch(`http://${ESP32_IP}/data`);
+                if (!response.ok) throw new Error('Network response was not ok');
+                
+                const data = await response.json();
+                updateDashboard(data);
+                updateConnectionStatus(true);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                updateConnectionStatus(false);
+                // Use simulated data for demo
+                simulateData();
+            }
+        }
+
+        // Simulate data for demo purposes
+        function simulateData() {
+            const data = {
+                temperature: (20 + Math.random() * 10).toFixed(1),
+                humidity: (40 + Math.random() * 30).toFixed(1),
+                co2: Math.floor(400 + Math.random() * 600)
+            };
+            updateDashboard(data);
+        }
+
+        // Update dashboard with new data
+        function updateDashboard(data) {
+            // Update values
+            document.getElementById('tempValue').textContent = data.temperature;
+            document.getElementById('humidValue').textContent = data.humidity;
+            document.getElementById('co2Value').textContent = data.co2;
+
+            // Update progress bars
+            const tempPercent = (data.temperature / 50) * 100;
+            const humidPercent = data.humidity;
+            const co2Percent = ((data.co2 - 400) / 1600) * 100;
+
+            document.getElementById('tempProgress').style.width = tempPercent + '%';
+            document.getElementById('humidProgress').style.width = humidPercent + '%';
+            document.getElementById('co2Progress').style.width = co2Percent + '%';
+
+            // Update status
+            updateStatus('temp', data.temperature, 15, 30);
+            updateStatus('humid', data.humidity, 30, 70);
+            updateStatus('co2', data.co2, 400, 1000);
+
+            // Update chart
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString();
+            
+            if (timeLabels.length > 20) {
+                timeLabels.shift();
+                temperatureData.shift();
+                humidityData.shift();
+                co2Data.shift();
+            }
+
+            timeLabels.push(timeStr);
+            temperatureData.push(parseFloat(data.temperature));
+            humidityData.push(parseFloat(data.humidity));
+            co2Data.push(parseFloat(data.co2) / 10); // Scale down for visibility
+
+            mainChart.update();
+
+            // Update last update time
+            document.getElementById('lastUpdate').textContent = timeStr;
+            dataPointCount++;
+            document.getElementById('dataPoints').textContent = dataPointCount;
+
+            // Check for alerts
+            checkAlerts(data);
+        }
+
+        // Update status indicators
+        function updateStatus(type, value, min, max) {
+            const statusElement = document.getElementById(type + 'Status');
+            
+            if (value < min || value > max) {
+                statusElement.textContent = 'WARNING';
+                statusElement.className = 'stat-status status-warning';
+            } else if (value < min * 0.8 || value > max * 1.2) {
+                statusElement.textContent = 'DANGER';
+                statusElement.className = 'stat-status status-danger';
+            } else {
+                statusElement.textContent = 'NORMAL';
+                statusElement.className = 'stat-status status-normal';
+            }
+        }
+
+        // Update connection status
+        function updateConnectionStatus(connected) {
+            const statusElement = document.getElementById('connectionStatus');
+            if (connected) {
+                statusElement.classList.remove('offline');
+                statusElement.querySelector('span').textContent = 'CONNECTED';
+            } else {
+                statusElement.classList.add('offline');
+                statusElement.querySelector('span').textContent = 'OFFLINE';
+            }
+        }
+
+        // Check for alerts
+        function checkAlerts(data) {
+            const alerts = [];
+            
+            if (data.temperature > 30) {
+                alerts.push('High temperature detected: ' + data.temperature + '°C');
+            }
+            if (data.humidity > 70) {
+                alerts.push('High humidity detected: ' + data.humidity + '%');
+            }
+            if (data.co2 > 1000) {
+                alerts.push('High CO2 level detected: ' + data.co2 + ' ppm');
+            }
+
+            const alertsSection = document.getElementById('alertsSection');
+            const alertsList = document.getElementById('alertsList');
+
+            if (alerts.length > 0) {
+                alertsSection.classList.add('active');
+                alertsList.innerHTML = alerts.map(alert => 
+                    `<div class="alert-item">${alert}</div>`
+                ).join('');
+            } else {
+                alertsSection.classList.remove('active');
+            }
+        }
+
+        // Clear data
+        function clearData() {
+            temperatureData = [];
+            humidityData = [];
+            co2Data = [];
+            timeLabels = [];
+            dataPointCount = 0;
+            document.getElementById('dataPoints').textContent = '0';
+            mainChart.update();
+        }
+
+        // Refresh data
+        function refreshData() {
+            fetchSensorData();
+        }
+
+        // Start automatic updates
+        setInterval(fetchSensorData, UPDATE_INTERVAL);
+
+        // Initial data fetch
+        fetchSensorData();
+    </script>
+</body>
+</html>
