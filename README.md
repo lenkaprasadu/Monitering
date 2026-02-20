@@ -23,3 +23,5 @@ JavaScript
 ☁️ Cloud database integration
 🔔 Alert system for abnormal conditions
 🌍 Location-based monitoring
+## 🌐 Live Website
+🔗 https://lenkaprasadu.github.io/Monitering/moniter.html
